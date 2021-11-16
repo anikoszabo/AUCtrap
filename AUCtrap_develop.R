@@ -10,7 +10,9 @@ use_gpl3_license()
 
 use_r("AUCtrap")
 
+document()
 load_all()
+check()
 
 AUCtrap(0:4, c(3,4,1,2), method="AUC")
 AUCtrap(0:3, c(3,4,1,2), method="AUC")
