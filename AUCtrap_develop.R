@@ -11,3 +11,9 @@ use_gpl3_license()
 use_r("AUCtrap")
 
 load_all()
+
+AUCtrap(0:4, c(3,4,1,2), method="AUC")
+AUCtrap(0:3, c(3,4,1,2), method="AUC")
+AUCtrap(0:3, c(3,4,1,2))
+AUCtrap(0:3, c(3,4,1,2), method="iAUC")
+AUCtrap(0:3, c(3,4,1,2), method="xyz")
