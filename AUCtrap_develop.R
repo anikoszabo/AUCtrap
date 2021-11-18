@@ -19,7 +19,11 @@ load_all()
 check()
 
 AUCtrap(0:4, c(3,4,1,2), method="AUC")
-AUCtrap(0:3, c(3,4,1,2), method="AUC")
+ex <- AUCtrap(0:3, c(3,4,1,2), method="AUC")
 AUCtrap(0:3, c(3,4,1,2))
 AUCtrap(0:3, c(3,4,1,2), method="iAUC")
 AUCtrap(0:3, c(3,4,1,2), method="xyz")
+
+
+plot(ex)
+plot(ex, fill.pos="pink", pch=20, xlab="Time", ylab="Value")

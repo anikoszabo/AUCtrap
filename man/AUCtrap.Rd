@@ -15,7 +15,13 @@ AUCtrap(x, y, method = c("AUC", "iAUC", "netAUC", "minAUC"))
 to "AUC", which is the total area under the curve}
 }
 \value{
-numeric value with the calculated area
+an object of class \code{auctrap} with the following elements
+\describe{
+\item{value}{calculated area}
+\item{x}{sorted x values}
+\item{y}{y values sorted with x}
+\item{method}{calculation method}
+}
 }
 \description{
 \code{AUCtrap} implements several methods for calculating the area
