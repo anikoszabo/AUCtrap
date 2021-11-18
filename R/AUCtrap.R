@@ -83,7 +83,12 @@ plot.auctrap <- function(x, fill.pos="lightblue", fill.neg="pink", pch=1, ...){
     points(x$x,x$y, pch=pch)
     title(main = paste("AUC =", format(x$value, digits = 2)),
           sub = paste("Calculated using the", x$method, "method"))
-
+  } else if (x$method == "iAUC"){
+    stop("Plotting for this method is not implemented yet")
+  } else if (x$method == "netAUC"){
+    stop("Plotting for this method is not implemented yet")
+  } else if (x$method == "minAUC"){
+    stop("Plotting for this method is not implemented yet")
   }
 }
 
