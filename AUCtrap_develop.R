@@ -7,10 +7,14 @@ use_github()
 desc_add_author(given="Aniko", family="Szabo", email = "aszabo@mcw.edu",
                 role=c("aut","cre"))
 use_gpl3_license()
+use_testthat()
+
 
 use_r("AUCtrap")
+use_test("AUCtrap")
 
 document()
+test()
 load_all()
 check()
 

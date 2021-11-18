@@ -20,6 +20,9 @@
 #' @importFrom utils head tail
 #'
 AUCtrap <- function(x, y, method=c("AUC", "iAUC","netAUC","minAUC")){
+
+  if (length(x) != length(y)) stop("Input vectors should have the same lengths")
+
   method <- match.arg(method)
 
   res <- switch(method,
