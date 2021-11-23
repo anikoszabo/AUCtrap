@@ -6,6 +6,12 @@ use_git()
 use_github()
 desc_add_author(given="Aniko", family="Szabo", email = "aszabo@mcw.edu",
                 role=c("aut","cre"))
+desc_add_author(given="Yushu", family="Wang", email = "yuswang@mcw.edu",
+                role=c("aut","cre"))
+desc_add_author(given="DeXuan", family="Zhang", email = "dezhang@mcw.edu",
+                role=c("aut","cre"))
+desc_add_author(given="Haoran", family="Teng", email = "hteng@mcw.edu",
+                role=c("aut","cre"))
 use_gpl3_license()
 use_testthat()
 

@@ -2,10 +2,22 @@ Package: AUCtrap
 Title: Calculate Area Under the Curve Using Trapezoidal Rule
 Version: 0.0.0.9000
 Authors@R: 
-       person(given = "Aniko",
+    c(person(given = "Aniko",
              family = "Szabo",
              role = c("aut", "cre"),
-             email = "aszabo@mcw.edu")
+             email = "aszabo@mcw.edu"),
+      person(given = "Yushu",
+             family = "Wang",
+             role = c("aut"),
+             email = "yuswang@mcw.edu"),
+      person(given = "DeXuan",
+             family = "Zhang",
+             role = c("aut"),
+             email = "dezhang@mcw.edu"),
+      person(given = "Haoran",
+             family = "Teng",
+             role = c("aut"),
+             email = "hteng@mcw.edu"))
 Description: This package calculates the area under the curve for longitudinal measurements using the trapezoidal rule. Several definitions are implemented: AUC, incremental AUC, net AUC, and min AUC.
 License: GPL (>= 3)
 Encoding: UTF-8
