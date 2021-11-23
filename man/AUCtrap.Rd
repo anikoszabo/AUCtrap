@@ -2,17 +2,36 @@
 % Please edit documentation in R/AUCtrap.R
 \name{AUCtrap}
 \alias{AUCtrap}
+\alias{AUCtrap.default}
+\alias{AUCtrap.formula}
 \title{Calculate AUC Using Trapezoidal Rule}
 \usage{
-AUCtrap(x, y, method = c("AUC", "iAUC", "netAUC", "minAUC"))
+AUCtrap(x, ...)
+
+\method{AUCtrap}{default}(x, y, method = c("AUC", "iAUC", "netAUC", "minAUC"), ...)
+
+\method{AUCtrap}{formula}(formula, data, subset, na.action, ...)
 }
 \arguments{
 \item{x}{numeric vector giving the measurement times (x-values)}
+
+\item{...}{further arguments passed to methods}
 
 \item{y}{numeric vector with the measurements corresponding to \code{x}}
 
 \item{method}{character value defining the calculation method. Defaults
 to "AUC", which is the total area under the curve}
+
+\item{formula}{a formula of the form \code{y ~ x} where \code{y} is the measured response
+and \code{x} are the measurement times}
+
+\item{data}{an optional matrix or data frame containing the variables in
+\code{formula}. By default, the variables are taken from \code{environment(formula)}.}
+
+\item{subset}{an optional vector specifying a subset of observations to be taken}
+
+\item{na.action}{a function which indicates what should happen when the data
+contain \code{NA}s. Defaults to \code{getOption("na.action")}.}
 }
 \value{
 an object of class \code{auctrap} with the following elements

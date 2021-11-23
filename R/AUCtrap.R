@@ -9,9 +9,18 @@
 #' minimum as baseline ("minAUC").
 #'
 #' @param x numeric vector giving the measurement times (x-values)
+#' @param ... further arguments passed to methods
+#' @export
+AUCtrap <- function(x,...){
+  UseMethod("AUCtrap")
+}
+
+#' @name AUCtrap
 #' @param y numeric vector with the measurements corresponding to \code{x}
 #' @param method character value defining the calculation method. Defaults
 #' to "AUC", which is the total area under the curve
+#'
+#'
 #' @return an object of class \code{auctrap} with the following elements
 #' \describe{
 #'   \item{value}{calculated area}
@@ -25,7 +34,8 @@
 #' @export
 #' @importFrom utils head tail
 #'
-AUCtrap <- function(x, y, method=c("AUC", "iAUC","netAUC","minAUC")){
+
+AUCtrap.default <- function(x, y, method=c("AUC", "iAUC","netAUC","minAUC"),...){
 
   if (length(x) != length(y)) stop("Input vectors should have the same lengths")
 
@@ -38,6 +48,37 @@ AUCtrap <- function(x, y, method=c("AUC", "iAUC","netAUC","minAUC")){
     minAUC = minAUC(x,y)
   )
 
+  res
+}
+
+#' @name AUCtrap
+#' @param formula a formula of the form `y ~ x` where `y` is the measured response
+#' and `x` are the measurement times
+#' @param data an optional matrix or data frame containing the variables in
+#' `formula`. By default, the variables are taken from `environment(formula)`.
+#' @param subset an optional vector specifying a subset of observations to be taken
+#' @param na.action a function which indicates what should happen when the data
+#' contain `NA`s. Defaults to `getOption("na.action")`.
+
+AUCtrap.formula <- function(formula, data, subset, na.action, ...){
+  if (missing(formula) || (length(formula) != 3L))
+    stop("'formula' missing or incorrect")
+
+  m <- match.call(expand.dots = FALSE)
+  if (is.matrix(eval(m$data, parent.frame())))
+    m$data <- as.data.frame(data)
+  m[[1L]] <- quote(stats::model.frame)
+  m$... <- NULL
+  mf <- eval(m, parent.frame())
+  if (ncol(mf) != 2L)
+    stop("The formula should have the form y~x with one term on each side")
+  response <- attr(attr(mf, "terms"), "response")
+  y <- mf[[response]]
+  x <- mf[[-response]]
+  if (!is.vector(x, mode="numeric"))
+    stop("The predictor should be a single numeric vector")
+
+  res <- AUCtrap.default(x=x, y=y, ...)
   res
 }
 
@@ -60,19 +101,23 @@ totalAUC <- function(x,y){
 
 #' Methods for 'auctrap' class
 #' @rdname auctrap_class
+#' @name auctrap_class
 #' @param x object of class \code{auctrap}
 #' @param digits minimal number of significant digits
+#' @param ... for `plot.auctrap` graphical option arguments passed to `plot`;
+#' not used for `print.auctrap`.
 #' @export
 print.auctrap <- function(x, digits = getOption("digits"), ...){
   cat(format(x$value, digits = digits), "using method", x$method)
   invisible(x)
 }
 
-#' @rdname auctrap_class
+#' @name auctrap_class
 #' @export
 #' @param fill.pos fill color of areas counted positively in the AUC calculation
 #' @param fill.neg fill color of areas counted negatively in the AUC calculation
 #' @param pch shape of observed data points
+#' @importFrom graphics abline points polygon title
 plot.auctrap <- function(x, fill.pos="lightblue", fill.neg="pink", pch=1, ...){
   if (x$method == "AUC"){
     ylim <- range(c(x$y, 0))

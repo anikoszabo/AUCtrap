@@ -33,3 +33,6 @@ AUCtrap(0:3, c(3,4,1,2), method="xyz")
 
 plot(ex)
 plot(ex, fill.pos="pink", pch=20, xlab="Time", ylab="Value")
+
+dd <- data.frame(Time = 0:4, Value = c(3,4,1,2,10), X = rnorm(5))
+AUCtrap(Value ~ Time, data=dd, subset=Time < 4)
