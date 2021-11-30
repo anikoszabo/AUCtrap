@@ -15,12 +15,17 @@ desc_add_author(given="Haoran", family="Teng", email = "hteng@mcw.edu",
 use_gpl3_license()
 use_testthat()
 
+use_readme_rmd()
+
+
 
 use_r("AUCtrap")
 use_test("AUCtrap")
 
 document()
 test()
+build_readme()
+
 load_all()
 check()
 
