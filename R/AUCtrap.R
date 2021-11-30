@@ -59,7 +59,7 @@ AUCtrap.default <- function(x, y, method=c("AUC", "iAUC","netAUC","minAUC"),...)
 #' @param subset an optional vector specifying a subset of observations to be taken
 #' @param na.action a function which indicates what should happen when the data
 #' contain `NA`s. Defaults to `getOption("na.action")`.
-
+#' @export
 AUCtrap.formula <- function(formula, data, subset, na.action, ...){
   if (missing(formula) || (length(formula) != 3L))
     stop("'formula' missing or incorrect")
@@ -99,6 +99,36 @@ totalAUC <- function(x,y){
   auclist
 }
 
+#' @keywords internal
+#' @inheritParams AUCtrap
+iAUC <- function(x,y) {
+
+  ord <- order(x)
+  x <- x[ord]
+  y <- y[ord]
+  auc<-c()
+  for (i in 2:length(x)) {
+    if (y[i] >= y[1] & y[i-1] >= y[1]) {
+      auc[i-1] <- (((y[i]-y[1])/2) + (y[i-1]-y[1])/2) * (x[i]-x[i-1])
+
+    } else if (y[i] >= y[1] & y[i-1] < y[1]) {
+      auc[i-1] <- ((y[i]-y[1])^2/(y[i]-y[i-1])) * (x[i]-x[i-1])/2
+
+    }  else if (y[i] < y[1] & y[i-1] <= y[1]) {
+      auc[i-1] <- 0
+
+    } else if (y[i] < y[1] & y[i-1] > y[1]) {
+      auc[i-1] <- ((y[i-1]-y[1])^2/(y[i-1]-y[i])) * (x[i]-x[i-1])/2
+
+    }
+  }
+  auclist <-list(value=sum(auc),x=x, y=y, method="iAUC")
+  class(auclist) <- "auctrap"
+  auclist
+
+}
+
+
 #' Methods for 'auctrap' class
 #' @rdname auctrap_class
 #' @name auctrap_class
@@ -117,7 +147,7 @@ print.auctrap <- function(x, digits = getOption("digits"), ...){
 #' @param fill.pos fill color of areas counted positively in the AUC calculation
 #' @param fill.neg fill color of areas counted negatively in the AUC calculation
 #' @param pch shape of observed data points
-#' @importFrom graphics abline points polygon title
+#' @importFrom graphics abline points polygon title lines
 plot.auctrap <- function(x, fill.pos="lightblue", fill.neg="pink", pch=1, ...){
   if (x$method == "AUC"){
     ylim <- range(c(x$y, 0))
@@ -129,7 +159,30 @@ plot.auctrap <- function(x, fill.pos="lightblue", fill.neg="pink", pch=1, ...){
     title(main = paste("AUC =", format(x$value, digits = 2)),
           sub = paste("Calculated using the", x$method, "method"))
   } else if (x$method == "iAUC"){
-    stop("Plotting for this method is not implemented yet")
+    p=x$x
+    q=x$y
+    ylim <- range(c(q, 0))
+    plot(p, q,ylim=ylim, type="n",...)
+    abline(h=q[1], col="gray")
+    for (i in 2:length(p)) {
+      if (q[i] >= q[1] & q[i-1] >= q[1]) {
+        polygon(x=c(p[i-1],p[i] , p[i], p[i-1],p[i-1]),
+                y=c(q[i-1], q[i], q[1], q[1],q[i-1]), col=fill.pos,border = NA)
+      } else if (q[i] >= q[1] & q[i-1] < q[1]) {
+        intercect=(p[i]-p[i-1])*(q[1]-q[i])/(q[i]-q[i-1])+p[i]
+        polygon(x=c(intercect,p[i] , p[i], intercect),
+                y=c(q[1], q[i], q[1], q[1]), col=fill.pos,border = NA)
+
+      } else if (q[i] < q[1] & q[i-1] >= q[1]) {
+        intercect=(p[i]-p[i-1])*(q[1]-q[i])/(q[i]-q[i-1])+p[i]
+        polygon(x=c(p[i-1], intercect,p[i-1] , p[i-1]),
+                y=c(q[i-1],q[1], q[1], q[i-1]), col=fill.pos,border = NA)
+      }
+    }
+    lines(p,q,type="l")
+    points(p,q,pch=pch)
+    title(main = paste("Incremental AUC =", format(x$value, digits = 2)),
+          sub = paste("Calculated using the", x$method, "method"))
   } else if (x$method == "netAUC"){
     stop("Plotting for this method is not implemented yet")
   } else if (x$method == "minAUC"){
