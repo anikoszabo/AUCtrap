@@ -26,6 +26,8 @@ AUCtrap(0:3, c(3,4,1,2))
 #> 7.5 using method AUC
 AUCtrap(0:3, c(3,4,1,2), method="iAUC")
 #> 0.6666667 using method iAUC
+AUCtrap(0:3, c(3,4,1,2), method="minAUC")
+#> 4.5 using method minAUC
 ```
 
 A formula can be used:
@@ -39,6 +41,10 @@ ex2 <- AUCtrap(0:3, c(3,4,1,2), method="iAUC")
 ex2
 #> 0.6666667 using method iAUC
 plot(ex2)
+
+ex.min <- AUCtrap(0:3, c(3,4,1,2), method="minAUC")
+plot(ex.min)
+AUCtrap(Value ~ Time, data=dd, subset=Time < 4, method="minAUC")
 ```
 
 <img src="man/figures/README-flaexample-1.png" width="100%" />

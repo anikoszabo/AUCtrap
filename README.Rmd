@@ -33,6 +33,7 @@ This is a basic example which shows you how to solve a common problem:
 library(AUCtrap)
 AUCtrap(0:3, c(3,4,1,2))
 AUCtrap(0:3, c(3,4,1,2), method="iAUC")
+AUCtrap(0:3, c(3,4,1,2), method="minAUC")
 ```
 
 A formula can be used:
@@ -45,4 +46,7 @@ ex2 <- AUCtrap(0:3, c(3,4,1,2), method="iAUC")
 ex2
 plot(ex2)
 
+ex.min <- AUCtrap(0:3, c(3,4,1,2), method="minAUC")
+plot(ex.min)
+AUCtrap(Value ~ Time, data=dd, subset=Time < 4, method="minAUC")
 ```

@@ -47,6 +47,12 @@ ex2<-AUCtrap(0:3, c(3,4,1,2), method="iAUC")
 plot(ex2)
 AUCtrap(Value ~ Time, data=dd, subset=Time < 4,method="iAUC")
 
+
+ex.min <- AUCtrap(0:3, c(3,4,1,2), method="minAUC")
+plot(ex.min)
+AUCtrap(Value ~ Time, data=dd, subset=Time < 4,method="minAUC")
+
 ex3<-AUCtrap(0:3, c(3,4,1,2), method="netAUC")
 plot(ex3)
 AUCtrap(Value ~ Time, data=dd, subset=Time < 4,method="netAUC")
+

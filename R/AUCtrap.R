@@ -128,6 +128,23 @@ iAUC <- function(x,y) {
 
 }
 
+#' @keywords internal
+#' @inheritParams AUCtrap
+minAUC <- function(x,y){
+  ord <- order(x)
+  xo <- x[ord]
+  yo <- y[ord]
+
+  auc <- (sum(diff(xo) * (head(yo,-1) + tail(yo, -1))/2)) - (min(yo) * (max(xo) - min(xo)))
+
+  auclist <- list(value = auc,
+                  x = xo,
+                  y = yo,
+                  method = "minAUC")
+  class(auclist) <- "auctrap"
+  auclist
+}
+
 
 #' @keywords internal
 #' @inheritParams AUCtrap
@@ -235,7 +252,14 @@ plot.auctrap <- function(x, fill.pos="lightblue", fill.neg="pink", pch=1, ...){
     title(main = paste("net AUC =", format(x$value, digits = 2)),
           sub = paste("Calculated using the", x$method, "method"))
   } else if (x$method == "minAUC"){
-    stop("Plotting for this method is not implemented yet")
+    ylim <- range(c(x$y, 0))
+    plot(x$x, x$y, ylim=ylim, type="n", ...)
+    abline(h=min(x$y), col="gray")
+    polygon(x=c(x$x, max(x$x), x$x[1], x$x[1]),
+            y=c(x$y, min(x$y), min(x$y), x$y[1]), col=fill.pos)
+    points(x$x,x$y, pch=pch)
+    title(main = paste("Min AUC =", format(x$value, digits = 2)),
+          sub = paste("Calculated using the", x$method, "method"))
   }
 }
 
