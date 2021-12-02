@@ -129,6 +129,25 @@ iAUC <- function(x,y) {
 }
 
 
+#' @keywords internal
+#' @inheritParams AUCtrap
+
+netAUC <- function(x,y){
+  ord <- order(x)
+  xo <- x[ord]
+  yo <- y[ord]
+
+  auc <- sum(diff(xo) * (head(yo,-1) + tail(yo, -1))/2)-y[1]*(xo[length(x)]-xo[1])
+
+  auclist <- list(value = auc,
+                  x = xo,
+                  y = yo,
+                  method = "netAUC")
+  class(auclist) <- "auctrap"
+  auclist
+}
+
+
 #' Methods for 'auctrap' class
 #' @rdname auctrap_class
 #' @name auctrap_class
@@ -184,10 +203,41 @@ plot.auctrap <- function(x, fill.pos="lightblue", fill.neg="pink", pch=1, ...){
     title(main = paste("Incremental AUC =", format(x$value, digits = 2)),
           sub = paste("Calculated using the", x$method, "method"))
   } else if (x$method == "netAUC"){
-    stop("Plotting for this method is not implemented yet")
+    p=x$x
+    q=x$y
+    ylim <- range(c(q, 0))
+    plot(p, q,ylim=ylim, type="n",...)
+    abline(h=q[1], col="gray")
+    for (i in 2:length(p)) {
+      if (q[i] >= q[1] & q[i-1] >= q[1]) {
+        polygon(x=c(p[i-1],p[i] , p[i], p[i-1],p[i-1]),
+                y=c(q[i-1], q[i], q[1], q[1],q[i-1]), col=fill.pos,border = NA)
+      } else if (q[i] >= q[1] & q[i-1] < q[1]) {
+        intercect=(p[i]-p[i-1])*(q[1]-q[i])/(q[i]-q[i-1])+p[i]
+        polygon(x=c(intercect,p[i] , p[i], intercect),
+                y=c(q[1], q[i], q[1], q[1]), col=fill.pos,border = NA)
+        polygon(x=c(p[i-1],intercect,q[i-1],q[i-1]),
+                y=c(q[1],q[1],p[i-1],q[1]), col=fill.neg,border = NA)
+
+      } else if (q[i] < q[1] & q[i-1] >= q[1]) {
+        intercect=(p[i]-p[i-1])*(q[1]-q[i])/(q[i]-q[i-1])+p[i]
+        polygon(x=c(p[i-1], intercect,p[i-1] , p[i-1]),
+                y=c(q[i-1],q[1], q[1], q[i-1]), col=fill.pos,border = NA)
+        polygon(x=c(intercect,p[i],p[i],intercect),
+                y=c(q[1],q[1],q[i],q[1]), col=fill.neg,border = NA)
+      }else if (q[i] < q[1] & q[i-1] < q[1]){
+        polygon(x=c(p[i-1],p[i] , p[i], p[i-1],p[i-1]),
+                y=c(q[i-1], q[i], q[1], q[1],q[i-1]), col=fill.neg,border = NA)
+      }
+    }
+    lines(p,q,type="l")
+    points(p,q,pch=pch)
+    title(main = paste("net AUC =", format(x$value, digits = 2)),
+          sub = paste("Calculated using the", x$method, "method"))
   } else if (x$method == "minAUC"){
     stop("Plotting for this method is not implemented yet")
   }
 }
+
 
 
