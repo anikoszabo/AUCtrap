@@ -135,7 +135,7 @@ minAUC <- function(x,y){
   xo <- x[ord]
   yo <- y[ord]
 
-  auc <- sum(diff(xo) * (head(yo,-1) + tail(yo, -1))/2) - yo[1]*(xo[length(xo)] - xo[1])
+  auc <- (sum(diff(xo) * (head(yo,-1) + tail(yo, -1))/2)) - (min(yo) * (max(xo) - min(xo)))
 
   auclist <- list(value = auc,
                   x = xo,
